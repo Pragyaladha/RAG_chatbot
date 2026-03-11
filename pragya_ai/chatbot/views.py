@@ -161,3 +161,28 @@ def upload_data(request):
         return redirect("home")
 
     return render(request, "upload.html")
+
+
+def chatbot(request):
+
+    if "chat_history" not in request.session:
+        request.session["chat_history"] = []
+
+    if request.method == "POST":
+        question = request.POST.get("question")
+
+        answer = "AI reply here"
+
+        chat_history = request.session["chat_history"]
+
+        chat_history.append({
+            "user": question,
+            "bot": answer
+        })
+
+        request.session["chat_history"] = chat_history
+
+    return render(request,"chat.html",{
+        "chat_history": request.session.get("chat_history",[])
+    })
+      

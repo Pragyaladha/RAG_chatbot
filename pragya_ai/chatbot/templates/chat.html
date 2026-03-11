@@ -1,194 +1,105 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Pragya AI</title>
-</head>
-<body>
-    <h1>Ask About Pragya</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="question" placeholder="Ask something..." required>
-        <button type="submit">Ask</button>
-    </form>
-
-    {% if answer %}
-        <h3>Answer:</h3>
-        <p>{{ answer }}</p>
-    {% endif %}
-</body>
-</html>
-<!-- 
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pragya AI</title>
 
-<title>Pragya AI Assistant</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
-
 body{
-background:linear-gradient(135deg,#667eea,#764ba2);
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
+    background:#f5f7fb;
 }
 
-.container{
-width:600px;
-background:white;
-border-radius:14px;
-box-shadow:0 15px 40px rgba(0,0,0,0.2);
-padding:30px;
+.chat-container{
+    height:70vh;
+    overflow-y:auto;
 }
-
-h1{
-text-align:center;
-margin-bottom:25px;
-color:#333;
-font-weight:600;
-}
-
-form{
-display:flex;
-gap:10px;
-}
-
-input{
-flex:1;
-padding:12px 14px;
-border-radius:8px;
-border:1px solid #ddd;
-font-size:14px;
-}
-
-input:focus{
-outline:none;
-border-color:#667eea;
-}
-
-button{
-padding:12px 20px;
-background:#667eea;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:500;
-transition:0.2s;
-}
-
-button:hover{
-background:#5563d1;
-}
-
-button:disabled{
-background:#aaa;
-cursor:not-allowed;
-}
-
-.answer-box{
-margin-top:25px;
-padding:18px;
-background:#f6f7fb;
-border-radius:10px;
-line-height:1.6;
-}
-
-.loader{
-margin-top:20px;
-display:none;
-text-align:center;
-}
-
-.dot{
-height:10px;
-width:10px;
-margin:3px;
-background:#667eea;
-border-radius:50%;
-display:inline-block;
-animation: bounce 1.4s infinite ease-in-out both;
-}
-
-.dot:nth-child(1){animation-delay:-0.32s;}
-.dot:nth-child(2){animation-delay:-0.16s;}
-
-@keyframes bounce{
-0%,80%,100%{transform:scale(0)}
-40%{transform:scale(1)}
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="flex flex-col items-center justify-center min-h-screen">
 
-<h1>Pragya AI Assistant</h1>
+<!-- HEADER -->
 
-<form method="POST" id="chatForm">
+<div class="text-center mb-6">
+<h1 class="text-3xl font-bold text-gray-800">Pragya AI</h1>
+<p class="text-gray-500">Your AI powered assistant</p>
+</div>
+
+<!-- CHAT BOX -->
+
+<div class="bg-white w-full max-w-3xl rounded-xl shadow-lg flex flex-col">
+
+<!-- CHAT AREA -->
+
+<div class="chat-container p-6 space-y-6">
+{% for chat in chat_history %}
+
+{% if chat.sender == "user" %}
+
+<!-- USER MESSAGE -->
+<div class="flex justify-end">
+    <div class="bg-blue-500 text-white px-4 py-3 rounded-xl max-w-md break-words shadow">
+        {{ chat.text }}
+    </div>
+</div>
+
+{% else %}
+
+<!-- BOT MESSAGE -->
+<div class="flex justify-start">
+    <div class="bg-gray-200 text-gray-900 px-4 py-3 rounded-xl max-w-md break-words shadow">
+        {{ chat.text }}
+    </div>
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<!-- INPUT -->
+
+<form method="POST" class="border-t p-4 flex gap-3">
 
 {% csrf_token %}
 
-<input 
+<input
 type="text"
 name="question"
-id="questionInput"
-placeholder="Ask something about Pragya..."
+placeholder="Ask me anything..."
+class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
 required
 >
 
-<button id="sendBtn">Ask</button>
+<button
+type="submit"
+class="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600"
+>
+Send
+</button>
 
 </form>
 
-
-<div class="loader" id="loader">
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
 </div>
-
-
-{% if answer %}
-<div class="answer-box">
-<h3>Answer</h3>
-<p>{{ answer }}</p>
-</div>
-{% endif %}
 
 </div>
 
 <script>
 
-const form=document.getElementById("chatForm")
-const input=document.getElementById("questionInput")
-const btn=document.getElementById("sendBtn")
-const loader=document.getElementById("loader")
+const chatBox = document.querySelector(".chat-container");
 
-form.addEventListener("submit",function(){
+if(chatBox){
+chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-btn.disabled=true
-input.disabled=true
-
-loader.style.display="block"
-
-})
-
-</script> 
+</script>
 
 </body>
-</html> -->
+
+</html>
