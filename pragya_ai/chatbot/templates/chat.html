@@ -197,7 +197,7 @@ setTimeout(() => {
 
 </script>  -->
 
-<script>
+<!-- <script>
 const chatBox = document.querySelector(".chat-container");
 const form = document.getElementById("chat-form");
 const loader = document.getElementById("loader");
@@ -258,6 +258,248 @@ sendBtn.disabled = true;
 sendBtn.classList.add("opacity-50","cursor-not-allowed");
 
 });
+</script> -->
+
+
+<!-- <script>
+
+const chatBox = document.querySelector(".chat-container");
+const form = document.getElementById("chat-form");
+const loader = document.getElementById("loader");
+const resetBtn = document.getElementById("reset-btn");
+const input = document.querySelector('input[name="question"]');
+const sendBtn = form.querySelector('button[type="submit"]');
+
+chatBox.scrollTop = chatBox.scrollHeight;
+
+
+// SEND MESSAGE
+
+form.addEventListener("submit", function(e){
+
+e.preventDefault();
+
+const message = input.value.trim();
+if(!message) return;
+
+
+// disable button
+sendBtn.disabled = true;
+sendBtn.classList.add("opacity-50","cursor-not-allowed");
+
+
+// show user message instantly
+
+const userMsg = `
+<div class="flex justify-end">
+<div class="bg-blue-500 text-white px-4 py-3 rounded-xl max-w-md break-words shadow">
+${message}
+</div>
+</div>
+`;
+
+chatBox.insertAdjacentHTML("beforeend", userMsg);
+
+
+// clear input
+input.value = "";
+
+
+// show loader
+
+loader.classList.remove("hidden");
+chatBox.scrollTop = chatBox.scrollHeight;
+
+
+// API call
+
+fetch("/api/chat/",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+},
+
+body:JSON.stringify({
+question:message
+})
+
+})
+.then(res => res.json())
+.then(data =>{
+
+
+loader.classList.add("hidden");
+
+const botMsg = `
+<div class="flex justify-start">
+<div class="bg-gray-200 text-gray-900 px-4 py-3 rounded-xl max-w-md break-words shadow">
+${data.answer}
+</div>
+</div>
+`;
+
+chatBox.insertAdjacentHTML("beforeend", botMsg);
+
+
+// enable button
+
+sendBtn.disabled = false;
+sendBtn.classList.remove("opacity-50","cursor-not-allowed");
+
+chatBox.scrollTop = chatBox.scrollHeight;
+
+});
+
+});
+
+
+
+// RESET CHAT
+
+resetBtn.addEventListener("click", function(){
+
+fetch(window.location.href,{
+method:"POST",
+headers:{
+"Content-Type":"application/x-www-form-urlencoded",
+"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+},
+body:"reset=true"
+})
+.then(()=>{
+location.reload();
+});
+
+});
+
+</script> -->
+<script>
+
+const chatBox = document.querySelector(".chat-container");
+const form = document.getElementById("chat-form");
+const resetBtn = document.getElementById("reset-btn");
+const input = document.querySelector('input[name="question"]');
+const sendBtn = form.querySelector('button[type="submit"]');
+
+chatBox.scrollTop = chatBox.scrollHeight;
+
+
+// SEND MESSAGE
+
+form.addEventListener("submit", function(e){
+
+e.preventDefault();
+
+const message = input.value.trim();
+if(!message) return;
+
+
+// disable send button
+sendBtn.disabled = true;
+sendBtn.classList.add("opacity-50","cursor-not-allowed");
+
+
+// show user message instantly
+
+const userMsg = `
+<div class="flex justify-end">
+<div class="bg-blue-500 text-white px-4 py-3 rounded-xl max-w-md break-words shadow">
+${message}
+</div>
+</div>
+`;
+
+chatBox.insertAdjacentHTML("beforeend", userMsg);
+
+
+// clear input
+input.value = "";
+
+
+// create loader dynamically after user message
+
+const loaderHTML = `
+<div id="dynamic-loader" class="flex justify-start">
+<div class="bg-gray-200 px-4 py-3 rounded-xl shadow flex gap-2 items-center">
+<div class="loader-dot"></div>
+<div class="loader-dot"></div>
+<div class="loader-dot"></div>
+</div>
+</div>
+`;
+
+chatBox.insertAdjacentHTML("beforeend", loaderHTML);
+
+chatBox.scrollTop = chatBox.scrollHeight;
+
+
+// API call
+
+fetch("/api/chat/",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+},
+
+body:JSON.stringify({
+question:message
+})
+
+})
+.then(res => res.json())
+.then(data =>{
+
+
+// remove loader
+document.getElementById("dynamic-loader").remove();
+
+
+const botMsg = `
+<div class="flex justify-start">
+<div class="bg-gray-200 text-gray-900 px-4 py-3 rounded-xl max-w-md break-words shadow">
+${data.answer}
+</div>
+</div>
+`;
+
+chatBox.insertAdjacentHTML("beforeend", botMsg);
+
+
+// enable send button
+sendBtn.disabled = false;
+sendBtn.classList.remove("opacity-50","cursor-not-allowed");
+
+chatBox.scrollTop = chatBox.scrollHeight;
+
+});
+
+});
+
+
+// RESET CHAT
+
+resetBtn.addEventListener("click", function(){
+
+fetch(window.location.href,{
+method:"POST",
+headers:{
+"Content-Type":"application/x-www-form-urlencoded",
+"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+},
+body:"reset=true"
+})
+.then(()=>{
+location.reload();
+});
+
+});
+
 </script>
 
 </body>
