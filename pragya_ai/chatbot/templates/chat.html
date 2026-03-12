@@ -8,6 +8,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
+
 body{
     background:#f5f7fb;
 }
@@ -16,6 +17,37 @@ body{
     height:70vh;
     overflow-y:auto;
 }
+
+/* Loader animation */
+
+.loader-dot{
+    width:8px;
+    height:8px;
+    background:#555;
+    border-radius:50%;
+    animation:bounce 1.4s infinite ease-in-out both;
+}
+
+.loader-dot:nth-child(2){
+    animation-delay:0.2s;
+}
+
+.loader-dot:nth-child(3){
+    animation-delay:0.4s;
+}
+
+@keyframes bounce{
+
+0%,80%,100%{
+transform:scale(0);
+}
+
+40%{
+transform:scale(1);
+}
+
+}
+
 </style>
 </head>
 
@@ -28,7 +60,14 @@ body{
 <div class="text-center mb-6">
 <h1 class="text-3xl font-bold text-gray-800">Pragya AI</h1>
 <p class="text-gray-500">Your AI powered assistant</p>
+<a href="{% url 'login' %}">
+<button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow mt-2" >
+Login
+</button>
+</a>
 </div>
+
+
 
 <!-- CHAT BOX -->
 
@@ -37,6 +76,7 @@ body{
 <!-- CHAT AREA -->
 
 <div class="chat-container p-6 space-y-6">
+
 {% for chat in chat_history %}
 
 {% if chat.sender == "user" %}
@@ -58,14 +98,23 @@ body{
 </div>
 
 {% endif %}
-
 {% endfor %}
+
+<!-- LOADER -->
+
+<div id="loader" class="hidden flex justify-start">
+    <div class="bg-gray-200 px-4 py-3 rounded-xl shadow flex gap-2 items-center">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+    </div>
+</div>
 
 </div>
 
 <!-- INPUT -->
 
-<form method="POST" class="border-t p-4 flex gap-3">
+<form id="chat-form" method="POST" class="border-t p-4 flex gap-3">
 
 {% csrf_token %}
 
@@ -84,20 +133,131 @@ class="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600"
 Send
 </button>
 
+<button
+type="button"
+name="reset"
+id="reset-btn"
+value="true"
+class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
+>
+↻
+</button>
+
 </form>
 
 </div>
 
 </div>
+<!--  
+ <script> 
 
-<script>
 
 const chatBox = document.querySelector(".chat-container");
+const form = document.getElementById("chat-form");
+const loader = document.getElementById("loader");
 
 if(chatBox){
 chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+form.addEventListener("submit", function(){
+
+loader.classList.remove("hidden");
+
+setTimeout(() => {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}, 100);
+
+});
+
+
+
+// const chatBox = document.querySelector(".chat-container");
+// const form = document.getElementById("chat-form");
+// const loader = document.getElementById("loader");
+// const sendBtn = document.getElementById("send-btn");
+
+// if(chatBox){
+// chatBox.scrollTop = chatBox.scrollHeight;
+// }
+
+// form.addEventListener("submit", function(){
+
+// // show loader
+// loader.classList.remove("hidden");
+
+// // disable send button
+// sendBtn.disabled = true;
+
+// // change button style
+// sendBtn.classList.add("opacity-50","cursor-not-allowed");
+
+// });
+
+
+</script>  -->
+
+<script>
+const chatBox = document.querySelector(".chat-container");
+const form = document.getElementById("chat-form");
+const loader = document.getElementById("loader");
+const resetBtn = document.getElementById("reset-btn");
+
+if(chatBox){
+chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+form.addEventListener("submit", function(){
+
+loader.classList.remove("hidden");
+
+setTimeout(() => {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}, 100);
+
+});
+
+
+// RESET BUTTON FUNCTION
+
+resetBtn.addEventListener("click", function(){
+
+// send reset request to Django backend
+fetch(window.location.href, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: "reset=true"
+})
+.then(() => {
+
+    // clear chat UI
+    chatBox.innerHTML = "";
+
+    // hide loader
+    loader.classList.add("hidden");
+
+    // reset input
+    form.reset();
+
+    // reload page so session updates
+    location.reload();
+
+});
+
+
+// // show loader
+loader.classList.remove("hidden");
+
+// // disable send button
+sendBtn.disabled = true;
+
+// change button style
+sendBtn.classList.add("opacity-50","cursor-not-allowed");
+
+});
 </script>
 
 </body>

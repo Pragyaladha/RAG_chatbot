@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Upload PDF</title>
@@ -10,5 +10,81 @@
         <input type="file" name="file" accept=".pdf" required>
         <button type="submit">Upload</button>
     </form>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Upload PDF</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+background:#f5f7fb;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="flex items-center justify-center min-h-screen">
+
+<div class="bg-white shadow-lg rounded-xl w-full max-w-md p-8">
+
+<h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
+Upload Your PDF
+</h2>
+
+<p class="text-gray-500 text-center mb-6">
+Upload your About-Me document for AI training
+</p>
+
+<form method="POST" enctype="multipart/form-data" class="space-y-5">
+
+{% csrf_token %}
+
+<div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+
+<input 
+type="file" 
+name="file" 
+accept=".pdf" 
+required
+class="block w-full text-sm text-gray-600
+file:mr-4 file:py-2 file:px-4
+file:rounded-lg file:border-0
+file:text-sm file:font-semibold
+file:bg-blue-500 file:text-white
+hover:file:bg-blue-600
+cursor-pointer"
+/>
+
+<p class="text-gray-400 text-sm mt-3">
+Only PDF files allowed
+</p>
+
+</div>
+
+<button 
+type="submit"
+class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+>
+Upload PDF
+</button>
+
+</form>
+
+</div>
+
+</div>
+
 </body>
 </html>
